@@ -5,7 +5,7 @@ using namespace std;
 //director:
 //http://www.cnblogs.com/absfree/p/5502705.html
 
-enum token_type
+typedef enum token_type
 {
     START_OBJ,
     END_OBJ,
@@ -18,13 +18,21 @@ enum token_type
     COLON,
     COMMA,
     END_FILE
-};
+} token_type;
+
+typedef enum error_type
+{
+    token_ok = 0,
+    token_error,
+
+}error_type;
 
 class token
 {
 private:
     token_type type;
     string value;
+
 public:
     token(token_type __type,string __value)
     {
@@ -43,26 +51,49 @@ public:
     }
 };
 
-token start_tokenize()
+class parser
 {
-    for(int i = 0;i < json_string.length();)
+private:
+    bool is_space(char c)
     {
-        while(is_space(json_string[i]))
+        if(c == '\n' || c == '\t' || c == ' ' || c == '\n')
         {
-            i++;
+            return true;
         }
-        if(is_null(json_string[i]))
-        {
-
-        }
+        return false;
     }
-}
+
+public:
+    error_type tokenize(token& t, const string& json_string, size_t& index)
+    {
+        size_t len = json_string.length();
+        while(index < len)
+        {
+            //过滤空格
+            while(this->is_space(json_string[index]))
+            {
+                index++;
+            }
+
+            //是否为null
+            if(index + 3 < len && json_string.substr(index,4) == string("null"))
+            {
+                index += 3;
+                token _t(NIL,"null");
+            }
+            //是否为
+            else if()
+        }
+
+    }
+};
+
 
 int main()
 {
     ifstream input_file("input.json");
 	string json_string("");
-    if(input_file == NULL) cout << "!!!" << endl;
+
 	string str;
     while(input_file >> str)
     {
